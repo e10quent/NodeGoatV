@@ -66,7 +66,7 @@ jobs:
       - run:
           name: "Get the Veracode agent"
           command: |
-            wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/19.2.5.6/vosp-api-wrappers-java-19.2.5.6.jar -O VeracodeJavaAPI.jar
+            wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/20.12.7.3/vosp-api-wrappers-java-20.12.7.3.jar -O VeracodeJavaAPI.jar
             #chmod 755 VeracodeJavaAPI.jar
 
       # upload for scanning

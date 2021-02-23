@@ -77,7 +77,7 @@ jobs:
               -vid $VID
               -vkey $VKEY
               -action uploadandscan 
-              -appname "NodeGoat" 
+              -appname $VERACODE_APP_NAME
               -createprofile false 
               -version CircleCI-$CIRCLE_BUILD_NUM 
               -filepath upload.zip

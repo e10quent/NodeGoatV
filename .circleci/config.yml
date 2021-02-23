@@ -74,10 +74,10 @@ jobs:
       - run:
           name: "Upload to Veracode"
           command: java -jar VeracodeJavaAPI.jar 
-              -vid $VERACODE_API_ID 
-              -vkey $VERACODE_API_KEY 
+              -vid $VID
+              -vkey $VKEY
               -action uploadandscan 
-              -appname $VERACODE_APP_NAME 
+              -appname "NodeGoat" 
               -createprofile false 
               -version CircleCI-$CIRCLE_BUILD_NUM 
               -filepath upload.zip

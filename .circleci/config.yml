@@ -85,7 +85,7 @@ jobs:
               -filepath upload.zip
 
   # job to upload to Veracode for scanning
-srcclr_scan:
+  srcclr_scan:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.19.0

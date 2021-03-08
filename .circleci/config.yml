@@ -47,7 +47,8 @@ jobs:
 
     # use a java-based image to run the Veracode API wrapper
     docker:
-      - image: circleci/openjdk:11.0.2-jdk
+     # - image: circleci/openjdk:11.0.2-jdk
+       - image: veracode/api-wrapper-java:latest
       
     working_directory: ~/repo
     
@@ -61,29 +62,30 @@ jobs:
           name: "Package for upload to Veracode"
           #command: zip -r upload.zip nodegoat
           command: zip -r upload.zip nodegoat -x *node_modules/*
-      
+      -
       # grab the Veracode agent
-      - run:
-          name: "Get the Veracode agent"
-          command: |
-            wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/20.12.7.3/vosp-api-wrappers-java-20.12.7.3.jar -O VeracodeJavaAPI.jar
+      #- run:
+      #    name: "Get the Veracode agent"
+      #    command: |
+      #      wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/20.12.7.3/vosp-api-wrappers-java-20.12.7.3.jar -O VeracodeJavaAPI.jar
+      #      curl -s http://search.maven.org/solrsearch/select?q=g:"com.veracode.vosp.api.wrappers"+AND+a:"vosp-api-wrappers-java" |grep -Po 'latestVersion.:.\K[^"]*'
             #chmod 755 VeracodeJavaAPI.jar
 
       # upload for scanning
       # env vars are used to pass login creds and set the scan name
       - run:
           name: "Upload to Veracode"
-          command: java -jar VeracodeJavaAPI.jar 
+          command: java -jar /opt/veracode/api-wrapper.jar  
               -vid $VID
               -vkey $VKEY
               -action uploadandscan 
-              -appname $VERACODE_APP_NAME
-              -createprofile false 
+              -appname $CIRCLE_PROJECT_REPONAME
+              -createprofile true 
               -version CircleCI-$CIRCLE_BUILD_NUM 
               -filepath upload.zip
 
   # job to upload to Veracode for scanning
-  srcclr_scan:
+srcclr_scan:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.19.0

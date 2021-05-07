@@ -89,6 +89,8 @@ workflows:
     jobs:
       - build
       - veracode_policy_scan:
+          context:
+            - VERACODE
           requires:
             - build
       - srcclr_scan:

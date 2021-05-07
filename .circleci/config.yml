@@ -54,14 +54,11 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-
       - run:
           command: 'zip -r ${CIRCLE_PROJECT_REPONAME}.zip nodegoat -x *node_modules/*'
           name: Package for upload to Veracode 
       - sast-orb/policy-scan:
-          appname: '${CIRCLE_PROJECT_REPONAME}'
           filepath: '${CIRCLE_PROJECT_REPONAME}.zip'
-          version: 'CircleCI - ${CIRCLE_SHA1:0:7} - $CIRCLE_BUILD_NUM'
           teams: 'Development'
           scantimeout: 15
 

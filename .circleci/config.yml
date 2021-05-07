@@ -60,7 +60,6 @@ jobs:
       - sast-orb/policy-scan:
           filepath: '${CIRCLE_PROJECT_REPONAME}.zip'
           teams: 'Development'
-          scantimeout: 15
 
   # job to upload to Veracode for scanning
   srcclr_scan:

@@ -2,7 +2,9 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
+orbs:
+  sast-orb: orb-01scan/sast-orb@0.0.8
 jobs:
   build:
     docker:
@@ -43,46 +45,25 @@ jobs:
             - nodegoat
       
   # job to upload to Veracode for scanning
-  veracode_scan:
 
-    # use a java-based image to run the Veracode API wrapper
-    docker:
-     # - image: circleci/openjdk:11.0.2-jdk
-       - image: veracode/api-wrapper-java:latest
+  veracode_policy_scan:
       
     working_directory: ~/repo
-    
+    executor: sast-orb/default
+
     steps:
-      # get the files from the previous job
       - attach_workspace:
           at: .
-          
-      # 'package' for uploading to Veracode
-      - run: 
-          name: "Package for upload to Veracode"
-          #command: zip -r upload.zip nodegoat
-          command: zip -r upload.zip nodegoat -x *node_modules/*
-    
-      # grab the Veracode agent
-      #- run:
-      #    name: "Get the Veracode agent"
-      #    command: |
-      #      wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/20.12.7.3/vosp-api-wrappers-java-20.12.7.3.jar -O VeracodeJavaAPI.jar
-      #      curl -s http://search.maven.org/solrsearch/select?q=g:"com.veracode.vosp.api.wrappers"+AND+a:"vosp-api-wrappers-java" |grep -Po 'latestVersion.:.\K[^"]*'
-            #chmod 755 VeracodeJavaAPI.jar
 
-      # upload for scanning
-      # env vars are used to pass login creds and set the scan name
       - run:
-          name: "Upload to Veracode"
-          command: java -jar /opt/veracode/api-wrapper.jar
-              -vid $VID
-              -vkey $VKEY
-              -action uploadandscan 
-              -appname $CIRCLE_PROJECT_REPONAME
-              -createprofile true 
-              -version CircleCI-$CIRCLE_BUILD_NUM 
-              -filepath upload.zip
+          command: 'zip -r ${CIRCLE_PROJECT_REPONAME}.zip nodegoat -x *node_modules/*'
+          name: Package for upload to Veracode 
+      - sast-orb/policy-scan:
+          appname: '${CIRCLE_PROJECT_REPONAME}'
+          filepath: '${CIRCLE_PROJECT_REPONAME}.zip'
+          version: 'CircleCI - ${CIRCLE_SHA1:0:7} - $CIRCLE_BUILD_NUM'
+          teams: 'Development'
+          scantimeout: 15
 
   # job to upload to Veracode for scanning
   srcclr_scan:
@@ -110,7 +91,7 @@ workflows:
   build_and_scan:
     jobs:
       - build
-      - veracode_scan:
+      - veracode_policy_scan:
           requires:
             - build
       - srcclr_scan:

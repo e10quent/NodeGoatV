@@ -4,7 +4,7 @@
 #
 version: 2.1
 orbs:
-  sast-orb: orb-01scan/sast-orb@0.0.8
+  sast-orb: orb-01scan/sast-orb@0.0.9
 jobs:
   build:
     docker:

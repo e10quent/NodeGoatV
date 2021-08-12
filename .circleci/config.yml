@@ -79,7 +79,7 @@ jobs:
           name: "SourceClear scan"
           command: |
             cd nodegoat
-            curl -sSL https://download.sourceclear.com/ci.sh | bash
+            curl -sSL https://download.sourceclear.com/ci.sh | bash -s -- scan --update-advisor
 
 # serial jobs - need to run 'build' before 'scan'
 workflows:

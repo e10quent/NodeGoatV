@@ -76,7 +76,7 @@ jobs:
 
       # download and run SourceClear scanner
       - run:
-          name: "SourceClear scan"
+          name: "Veracode SCA scan"
           command: |
             cd nodegoat
             curl -sSL https://download.sourceclear.com/ci.sh | bash -s -- scan --update-advisor
